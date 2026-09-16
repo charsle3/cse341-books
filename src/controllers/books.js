@@ -44,6 +44,12 @@ const postBookHandler = async (req, res) => {
             return res.status(400).json({ message: 'Book with this ID already exists' });
         }
 
+        for (const [key, value] of Object.entries(newBook)) {
+            if (key !== 'id' && key !== 'authorId' && key !== 'title' && key !== 'publicationDate') {
+                return res.status(400).json({ message: `Invalid field: ${key}` });
+            }
+        }
+
         // CHECK FOR AUTHOR EXISTENCE
 
         const result = await postBook(newBook);
