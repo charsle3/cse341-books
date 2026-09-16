@@ -32,9 +32,9 @@
                         "type": "string",
                         "example": "b1"
                       },
-                      "author": {
+                      "authorId": {
                         "type": "string",
-                        "example": "George Orwell"
+                        "example": "a1"
                       },
                       "title": {
                         "type": "string",
@@ -156,9 +156,9 @@
                       "type": "string",
                       "example": "b1"
                     },
-                    "author": {
+                    "authorId": {
                       "type": "string",
-                      "example": "George Orwell"
+                      "example": "a1"
                     },
                     "title": {
                       "type": "string",
@@ -285,6 +285,329 @@
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/authors": {
+      "get": {
+        "summary": "Get all authors",
+        "tags": [
+          "Authors"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of authors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "a1"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "George Orwell"
+                      },
+                      "dob": {
+                        "type": "string",
+                        "example": "1984-08-25"
+                      },
+                      "publications": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": [
+                            "b1",
+                            "b2"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new author",
+        "tags": [
+          "Authors"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "a1"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "George Orwell"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "example": "1984-08-25"
+                  },
+                  "publications": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": [
+                        "b1",
+                        "b2"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created author",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "a1"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "George Orwell"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "example": "1984-08-25"
+                    },
+                    "publications": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "b1",
+                          "b2"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid author data, or author with this ID already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/authors/{id}": {
+      "get": {
+        "summary": "Get an author by ID",
+        "tags": [
+          "Authors"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the author",
+            "schema": {
+              "type": "string"
+            },
+            "example": "a1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested author",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "a1"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "George Orwell"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "example": "1984-08-25"
+                    },
+                    "publications": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "b1",
+                          "b2"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Author not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an author by ID",
+        "tags": [
+          "Authors"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the author",
+            "schema": {
+              "type": "string"
+            },
+            "example": "a1"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "a1"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "George Orwell"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "example": "1984-08-25"
+                  },
+                  "publications": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": [
+                        "b1",
+                        "b2"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated author",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "a1"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "George Orwell"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "example": "1984-08-25"
+                    },
+                    "publications": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": [
+                          "b1",
+                          "b2"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid author data"
+          },
+          "404": {
+            "description": "Author not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an author by ID",
+        "tags": [
+          "Authors"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the author",
+            "schema": {
+              "type": "string"
+            },
+            "example": "a1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Author deleted successfully"
+          },
+          "404": {
+            "description": "Author not found"
+          },
+          "422": {
+            "description": "Cannot delete author with associated books"
           },
           "500": {
             "description": "Internal server error"

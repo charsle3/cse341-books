@@ -63,6 +63,7 @@ Success:
 
 Errors:
 - `400` if a required field is missing
+- `400` if extra fields are present
 - `400` if the `id` already exists
 - `400` if the `authorId` does not match an existing author
 - `500` if an unexpected server or database error occurs
@@ -171,6 +172,7 @@ Success:
 Errors:
 - `400` if a required field is missing
 - `400` if the `id` already exists
+- `400` if extra fields are present
 - `400` if book ids in `publications` do not match real books
 - `500` if an unexpected server or database error occurs
 
