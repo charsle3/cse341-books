@@ -5,6 +5,8 @@ import { getAllBooks,
     deleteBook
  } from "../models/books.js";
 
+ import { getAuthorById, putAuthor } from "../models/authors.js";
+
 const getBooksHandler = async (req, res) => {
     try {
         const allBooks = await getAllBooks();
@@ -50,11 +52,17 @@ const postBookHandler = async (req, res) => {
             }
         }
 
-        // CHECK FOR AUTHOR EXISTENCE
+        const author = await getAuthorById(newBook.authorId);
+
+        if (!author) {
+            return res.status(400).json({ message: 'Author not found' });
+        }
 
         const result = await postBook(newBook);
 
-        // UPDATE AUTHOR'S BOOKS ARRAY
+        author.publications.push(newBook.id);
+
+        await putAuthor(author.id, author);
 
         return res.status(201).json(result);
 
@@ -67,13 +75,14 @@ const postBookHandler = async (req, res) => {
 const putBookHandler = async (req, res) => {
     try {
         const bookId = req.params.id;
+        const oldBook = await getBookById(bookId);
         const updatedBook = req.body;
 
         if (!updatedBook || !updatedBook.authorId || !updatedBook.title || !updatedBook.publicationDate) {
             return res.status(400).json({ message: 'Invalid book data' });
         }
 
-        if (!await getBookById(bookId)) {
+        if (!oldBook) {
             return res.status(404).json({ message: 'Book not found' });
         }
 
@@ -82,12 +91,25 @@ const putBookHandler = async (req, res) => {
                 return res.status(400).json({ message: `Invalid field: ${key}` });
             }
         }
+        const author = await getAuthorById(updatedBook.authorId);
 
-        // CHECK FOR AUTHOR EXISTENCE
+        if (!author) {
+            return res.status(400).json({ message: 'Author not found' });
+        }
 
         const result = await putBook(bookId, updatedBook);
 
         // UPDATE AUTHOR'S BOOKS ARRAY IF AUTHOR ID CHANGED
+        if (updatedBook.authorId !== oldBook.authorId) {
+            // Remove book from old author's publications
+            const oldAuthor = await getAuthorById(oldBook.authorId);
+            oldAuthor.publications = oldAuthor.publications.filter(id => id !== bookId);
+            await putAuthor(oldAuthor.id, oldAuthor);
+
+            // Add book to new author's publications
+            author.publications.push(bookId);
+            await putAuthor(author.id, author);
+        }
 
         return res.status(200).json(result);
 
@@ -100,14 +122,18 @@ const putBookHandler = async (req, res) => {
 const deleteBookHandler = async (req, res) => {
     try {
         const bookId = req.params.id;
+        const book = await getBookById(bookId);
 
-        const result = await deleteBook(bookId);
-
-        if (!result.deletedCount) {
+        if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
 
         // UPDATE AUTHOR'S BOOKS ARRAY
+        const author = await getAuthorById(book.authorId);
+        author.publications = author.publications.filter(id => id !== bookId);
+        await putAuthor(author.id, author);
+
+        const result = await deleteBook(bookId);
 
         return res.status(200).json({ message: 'Book deleted successfully' });
     } catch (error) {
